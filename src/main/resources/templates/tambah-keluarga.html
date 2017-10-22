@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<title>Tambah Penduduk</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+
+	<h1 class="page-header">Tambah Keluarga</h1>
+
+	<form action="/keluarga/tambah" method="POST">
+		<div>
+			<label for="kota">Kota</label> 
+			<select name="kota" id="kota">
+			</select>
+		</div>
+		<div>
+			<label for="kecamatan">Kecamatan</label> 
+			<select name="kecamatan" id="kecamatan">
+				<option value=""> silahkan pilih kota terlebih dahulu </option>
+			</select>
+		</div>
+		<div>
+			<label for="kelurahan">Kelurahan</label> 
+			<select name="id_kelurahan" id="kelurahan">
+				<option value=""> silahkan pilih kecamatan terlebih dahulu </option>
+			</select>
+		</div>
+		<div>
+			<label for="alamat">Alamat</label> <input type="text" name="alamat" />
+		</div>
+		
+		<div>
+			<label for="rt">RT</label> <input type="text" name="rt" />
+		</div>
+		
+		<div>
+			<label for="rw">RW</label> <input type="text" name="rw" />
+		</div>
+				
+		<div>
+			<button type="submit">Simpan</button>
+		</div>
+	</form>
+	
+</body>
+<script type="text/javascript" th:inline="javascript">
+	$( document ).ready(function() {
+		var cities = [[(${cities})]];
+		var kecamatan = [[(${kecamatans})]];
+		var kelurahan = [[(${kelurahans})]];
+		
+		var kecamatans = {};
+		var kelurahans = {};
+		
+		var cityOptions = '<option value = "">Silahkan Pilih Kota/Kabupaten </option>';
+		cities.forEach(function(city) {
+		    cityOptions += '<option value = "'+ city.id+'">'+ city.nama_kota+'</option>\n';
+		});
+		
+		kecamatan.forEach(function(camat) {
+			if(!kecamatans[camat.id_kota]) {
+				kecamatans[camat.id_kota] = [];
+			}
+		    kecamatans[camat.id_kota].push(camat);
+		});
+		
+		kelurahan.forEach(function(lurah) {
+			if(!kelurahans[lurah.id_kecamatan]) {
+				kelurahans[lurah.id_kecamatan] = [];
+			}
+		    kelurahans[lurah.id_kecamatan].push(lurah);
+		});
+		$("#kota").html(cityOptions);
+		$('#kota').on('change', function() {
+			if(this.value !== '') {
+				var kecamatanOptions  = '<option value = ""> Silahkan Pilih Kecamatan</option>';	
+				kecamatans[this.value].forEach(function(kecamatan) {
+				    kecamatanOptions += '<option value = "'+ kecamatan.id+'">'+ kecamatan.nama_kecamatan+'</option>\n';
+				});
+				$("#kecamatan").html(kecamatanOptions);
+			}else {
+				$("#kecamatan").html('<option value = ""> Silahkan Pilih Kota Terlebih Dahulu</option>');
+				$("#kelurahan").html('<option value = ""> Silahkan Pilih Kecamatan Terlebih Dahulu</option>');
+			}
+		})
+		
+		$('#kecamatan').on('change', function() {
+			if(this.value !== '') {
+				var kelurahanOptions  = '<option value = ""> Silahkan Pilih Kelurahan</option>';	
+				kelurahans[this.value].forEach(function(kelurahan) {
+				    kelurahanOptions += '<option value = "'+ kelurahan.id+'">'+ kelurahan.nama_kelurahan+'</option>\n';
+				});
+				$("#kelurahan").html(kelurahanOptions);
+			}else {
+				$("#kelurahan").html('<option value = ""> Silahkan Pilih Kecamatan Terlebih Dahulu</option>');
+			}
+		})
+});
+
+</script>
+</html>
+
